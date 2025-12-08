@@ -6,6 +6,7 @@ from common import read_lines
 
 def main():
     print(solve_a(read_lines("input/02.txt")))
+    print(solve_b(read_lines("input/02.txt")))
 
 
 def solve_a(lines: list[str]) -> int:
@@ -13,31 +14,39 @@ def solve_a(lines: list[str]) -> int:
     invalid_sum = 0
 
     for start, end in ranges:
-        invalid_sum += reduce(operator.add, invalid_ids_in_range(start, end), 0)
+        invalid_sum += reduce(operator.add, invalid_ids_in_range(start, end, n=2), 0)
 
     return invalid_sum
 
 
-def invalid_ids_in_range(start: int, end: int) -> Generator[int, None, None]:
+def solve_b(lines: list[str]) -> int:
+    ranges = parse_ranges(lines[0])
+    invalid_sum = 0
+
+    for start, end in ranges:
+        invalid_ids: set[int] = set()
+        for n in range(2, len(str(end)) + 1):
+            invalid_ids.update(invalid_ids_in_range(start, end, n=n))
+        invalid_sum += reduce(operator.add, invalid_ids, 0)
+
+    return invalid_sum
+
+
+def invalid_ids_in_range(start: int, end: int, n: int) -> Generator[int, None, None]:
     start_s = str(start)
-    if len(start_s) % 2 == 0:
-        first_invalid_half = start_s[: len(start_s) // 2]
+    if len(start_s) % n == 0:
+        current_part = start_s[: len(start_s) // n]
     else:
-        first_invalid_half = "1" + "0" * (len(start_s) // 2)
+        current_part = "1" + "0" * (len(start_s) // n)
 
-    current = int(first_invalid_half * 2)
-    current_half = first_invalid_half
-    if start <= current <= end:
-        yield current
+    current = int(current_part * n)
 
-    while True:
-        current_half = str(int(current_half) + 1)
-        current = int(current_half * 2)
-
-        if current <= end:
+    while current <= end:
+        if start <= current <= end:
             yield current
-        else:
-            break
+
+        current_part = str(int(current_part) + 1)
+        current = int(current_part * n)
 
 
 def parse_ranges(line: str) -> list[tuple[int, int]]:
