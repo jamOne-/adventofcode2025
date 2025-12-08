@@ -1,4 +1,6 @@
 from common import read_lines
+from functools import reduce
+import operator
 
 
 def main():
@@ -7,31 +9,30 @@ def main():
 
 
 def solve_a(lines: list[str]) -> int:
-    parsed = parse_lines(lines)
-    sum = 0
-
-    for line in parsed:
-        highest = max(line)
-        highest_i = line.index(highest)
-
-        if highest_i == len(line) - 1:
-            first_digit = max(line[:highest_i])
-            second_digit = highest
-        else:
-            first_digit = highest
-            second_digit = max(line[highest_i + 1 :])
-
-        sum += first_digit * 10 + second_digit
-
-    return sum
+    return reduce(
+        operator.add, map(lambda line: find_biggest_battery(line, n=2), lines), 0
+    )
 
 
 def solve_b(lines: list[str]) -> int:
-    return 0
+    return reduce(
+        operator.add, map(lambda line: find_biggest_battery(line, n=12), lines), 0
+    )
 
 
-def parse_lines(lines: list[str]) -> list[list[int]]:
-    return [list(map(int, line)) for line in lines]
+def find_biggest_battery(xs: str, n: int) -> int:
+    battery = ["0" for _ in range(n)]
+
+    for i, x in enumerate(xs):
+        nums_left = len(xs) - i - 1
+        for j in range(max(0, n - nums_left - 1), n):
+            if x > battery[j]:
+                battery[j] = x
+                for k in range(j + 1, n):
+                    battery[k] = "0"
+                break
+
+    return int("".join(battery))
 
 
 if __name__ == "__main__":
