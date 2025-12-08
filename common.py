@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Generator
 
 
 @dataclass(frozen=True)
@@ -20,3 +21,11 @@ def parse_grid(lines: list[str]) -> Grid:
             grid[(x, y)] = c
     size = len(lines[0]), len(lines)
     return Grid(grid, size)
+
+
+def get_neighbors(x: int, y: int) -> Generator[tuple[int, int], None, None]:
+    for dx in [-1, 0, 1]:
+        for dy in [-1, 0, 1]:
+            if dx == 0 and dy == 0:
+                continue
+            yield x + dx, y + dy
