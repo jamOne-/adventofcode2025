@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from typing import Generator
 
+Point = tuple[int, int]
+
 
 @dataclass(frozen=True)
 class Grid:
-    grid: dict[tuple[int, int], str]
+    grid: dict[Point, str]
     size: tuple[int, int]
 
 
@@ -15,7 +17,7 @@ def read_lines(filename: str, strip: bool = True) -> list[str]:
 
 
 def parse_grid(lines: list[str]) -> Grid:
-    grid: dict[tuple[int, int], str] = {}
+    grid: dict[Point, str] = {}
     for y, line in enumerate(lines):
         for x, c in enumerate(line):
             grid[(x, y)] = c
@@ -23,7 +25,7 @@ def parse_grid(lines: list[str]) -> Grid:
     return Grid(grid, size)
 
 
-def get_neighbors(x: int, y: int) -> Generator[tuple[int, int], None, None]:
+def get_neighbors(x: int, y: int) -> Generator[Point, None, None]:
     for dx in [-1, 0, 1]:
         for dy in [-1, 0, 1]:
             if dx == 0 and dy == 0:
