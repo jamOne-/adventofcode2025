@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Generator
 
 Point = tuple[int, int]
+Point3 = tuple[int, int, int]
 
 
 @dataclass(frozen=True)
