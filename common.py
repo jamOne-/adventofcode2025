@@ -8,10 +8,10 @@ class Grid:
     size: tuple[int, int]
 
 
-def read_lines(filename: str) -> list[str]:
+def read_lines(filename: str, strip: bool = True) -> list[str]:
     with open(filename, encoding="UTF-8") as f:
         lines = f.readlines()
-    return [line.strip() for line in lines]
+    return [line.strip() if strip else line for line in lines]
 
 
 def parse_grid(lines: list[str]) -> Grid:
