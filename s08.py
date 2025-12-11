@@ -18,10 +18,9 @@ def main():
 def solve_a(lines: list[str], n: int = 1000) -> int:
     boxes = _parse_input(lines)
     nodes = [_Node(box) for box in boxes]
-    distances = _calculate_distances(nodes)
+    connecting_order = _calculate_distances(nodes)
 
-    n_nodes = sorted(distances.items(), key=lambda kv: kv[1])[:n]
-    for (node1, node2), _ in n_nodes:
+    for (node1, node2), _ in connecting_order[:n]:
         _union(node1, node2)
 
     parents = [node for node in nodes if node.parent is None]
@@ -34,9 +33,8 @@ def solve_a(lines: list[str], n: int = 1000) -> int:
 def solve_b(lines: list[str]) -> int:
     boxes = _parse_input(lines)
     nodes = [_Node(box) for box in boxes]
-    distances = _calculate_distances(nodes)
+    connecting_order = _calculate_distances(nodes)
 
-    connecting_order = sorted(distances.items(), key=lambda kv: kv[1])
     for (node1, node2), _ in connecting_order:
         p = _union(node1, node2)
         if p.size == len(nodes):
@@ -49,14 +47,14 @@ def _parse_input(lines: list[str]) -> list[Point3]:
     return [tuple(map(int, line.split(","))) for line in lines]
 
 
-def _calculate_distances(nodes: list[_Node]) -> dict[tuple[_Node, _Node], float]:
-    distances: dict[tuple[_Node, _Node], float] = {}
+def _calculate_distances(nodes: list[_Node]) -> list[tuple[tuple[_Node, _Node], float]]:
+    distances: list[tuple[tuple[_Node, _Node], float]] = []
     for i in range(len(nodes) - 1):
         for j in range(i + 1, len(nodes)):
             d = math.dist(nodes[i].p, nodes[j].p)
-            distances[(nodes[i], nodes[j])] = d
+            distances.append(((nodes[i], nodes[j]), d))
 
-    return distances
+    return sorted(distances, key=lambda nd: nd[1])
 
 
 def _union(a: _Node, b: _Node) -> _Node:
