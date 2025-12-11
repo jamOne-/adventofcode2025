@@ -32,6 +32,16 @@ def solve_a(lines: list[str], n: int = 1000) -> int:
 
 
 def solve_b(lines: list[str]) -> int:
+    boxes = _parse_input(lines)
+    nodes = [_Node(box) for box in boxes]
+    distances = _calculate_distances(nodes)
+
+    connecting_order = sorted(distances.items(), key=lambda kv: kv[1])
+    for (node1, node2), _ in connecting_order:
+        p = _union(node1, node2)
+        if p.size == len(nodes):
+            return node1.p[0] * node2.p[0]
+
     return 0
 
 
@@ -49,18 +59,16 @@ def _calculate_distances(nodes: list[_Node]) -> dict[tuple[_Node, _Node], float]
     return distances
 
 
-def _union(a: _Node, b: _Node) -> None:
+def _union(a: _Node, b: _Node) -> _Node:
     ap = _find_parent(a)
     bp = _find_parent(b)
-
     if ap == bp:
-        return
-    if ap.size < bp.size:
-        bp.parent = ap
-        ap.size += bp.size
-    else:
-        ap.parent = bp
-        bp.size += ap.size
+        return ap
+
+    parent, child = (bp, ap) if ap.size < bp.size else (ap, bp)
+    child.parent = parent
+    parent.size += child.size
+    return parent
 
 
 def _find_parent(node: _Node) -> _Node:

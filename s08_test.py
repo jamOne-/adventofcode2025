@@ -11,4 +11,4 @@ def test_solve_a():
 def test_solve_b():
     actual = solve_b(read_lines("input/08_test.txt"))
 
-    assert actual == 0
+    assert actual == 25272
