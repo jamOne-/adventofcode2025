@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generator
+from typing import Generator, Literal
 
 Point = tuple[int, int]
 Point3 = tuple[int, int, int]
@@ -32,3 +32,12 @@ def get_neighbors(x: int, y: int) -> Generator[Point, None, None]:
             if dx == 0 and dy == 0:
                 continue
             yield x + dx, y + dy
+
+
+def sign(x: int) -> Literal[-1, 0, 1]:
+    if x > 0:
+        return 1
+    elif x < 0:
+        return -1
+    else:
+        return 0
