@@ -9,6 +9,6 @@ def test_solve_a():
 
 
 def test_solve_b():
-    actual = solve_b(read_lines("input/11_test.txt"))
+    actual = solve_b(read_lines("input/11_test2.txt"))
 
-    assert actual == 0
+    assert actual == 2

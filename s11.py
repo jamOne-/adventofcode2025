@@ -23,7 +23,21 @@ def solve_a(lines: list[str]) -> int:
 
 
 def solve_b(lines: list[str]) -> int:
-    return 0
+    edges = _parse_input(lines)
+
+    @functools.cache
+    def _aux(node: str, dac: bool, fft: bool) -> int:
+        if node == "out" and dac and fft:
+            return 1
+        if not edges.get(node, set()) or node == "out":
+            return 0
+        if node == "dac":
+            dac = True
+        elif node == "fft":
+            fft = True
+        return sum(_aux(n, dac, fft) for n in edges[node])
+
+    return _aux("svr", False, False)
 
 
 def _parse_input(lines: list[str]) -> dict[str, set[str]]:
