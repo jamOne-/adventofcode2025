@@ -1,6 +1,5 @@
-from common import read_lines
-from collections import defaultdict
 import functools
+from common import read_lines
 
 
 def main():
